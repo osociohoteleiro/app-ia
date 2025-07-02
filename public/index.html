@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hotel Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f6f8fa;
+    }
+    .centered-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-box {
+      background: #fff;
+      padding: 2.5rem 2.25rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(30, 41, 59, .08);
+      width: 100%;
+      max-width: 370px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .login-box h2 {
+      text-align: center;
+      margin: 0;
+      color: #364fc7;
+      font-weight: 600;
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .form-field label {
+      font-size: 0.98rem;
+      color: #3a3a40;
+    }
+    .form-field input {
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 1rem;
+      transition: border 0.2s;
+      outline: none;
+    }
+    .form-field input:focus {
+      border: 1.5px solid #364fc7;
+      background: #f3f7ff;
+    }
+    .login-btn {
+      margin-top: 0.7rem;
+      padding: 0.8rem 0;
+      background: linear-gradient(90deg, #364fc7 60%, #4dabf7 100%);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: #a5b4fc;
+    }
+    .error-message {
+      color: #e03131;
+      text-align: center;
+      font-size: 0.99rem;
+      margin-top: -1rem;
+      margin-bottom: 0.5rem;
+      min-height: 1.2em;
+    }
+    @media (max-width: 500px) {
+      .login-box { padding: 1.5rem 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="centered-container">
+    <form id="loginForm" class="login-box" autocomplete="off">
+      <h2>Hotel Login</h2>
+      <div class="error-message" id="errorMsg"></div>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="your@email.com" required autocomplete="username">
+      </div>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Password" required autocomplete="current-password">
+      </div>
+      <button id="loginBtn" class="login-btn" type="submit">Entrar</button>
+    </form>
+  </div>
+  <script>
+    const form = document.getElementById('loginForm');
+    const btn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.textContent = "";
+      btn.disabled = true;
+      btn.textContent = "Entrando...";
+
+      const email = form.email.value.trim();
+      const password = form.password.value;
+
+      if (!email || !password) {
+        errorMsg.textContent = "Preencha todos os campos.";
+        btn.disabled = false;
+        btn.textContent = "Entrar";
+        return;
+      }
+
+      try {
+        const resp = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await resp.json();
+        if (resp.ok && data.token) {
+          // Save JWT and redirect
+          localStorage.setItem('token', data.token);
+          window.location.href = '/dashboard.html';
+        } else {
+          errorMsg.textContent = data.error || "Credenciais inválidas.";
+        }
+      } catch (err) {
+        errorMsg.textContent = "Erro de conexão. Tente novamente.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Entrar";
+      }
+    });
+  </script>
+</body>
+</html>

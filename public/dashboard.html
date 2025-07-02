@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard do Hotel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #f6f8fa;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dashboard-box {
+      background: #fff;
+      padding: 2.2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(30, 41, 59, .10);
+      max-width: 400px;
+      text-align: center;
+    }
+    .dashboard-box h1 {
+      margin: 0 0 0.7em 0;
+      color: #364fc7;
+      font-weight: 700;
+      font-size: 2rem;
+    }
+    .logout-btn {
+      margin-top: 2.2em;
+      padding: 0.7em 2.2em;
+      background: #e03131;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 1.07rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .logout-btn:hover {
+      background: #c92a2a;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-box">
+    <h1>Bem-vindo ao Dashboard</h1>
+    <div style="color:#444; margin-bottom:1.9em;">Você está logado com sucesso.</div>
+    <button class="logout-btn" onclick="logout()">Sair</button>
+  </div>
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>
